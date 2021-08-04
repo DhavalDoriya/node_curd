@@ -1,49 +1,18 @@
 const express = require('express')
 const app = express();
-const mongoose = require("mongoose");
 const bodyParser = require("body-Parser");
 const ejs = require("ejs");
 const path = require('path')
-const multer = require("multer")
 const fs = require('fs');
 const PORT = process.env.PORT || 8000;
 const Todo = require('./models/todomodel');
-
+const imageUpload = require('./middleware/multer')
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 // app.use(express.static('public'));
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-
-
-
-const imageStorage = multer.diskStorage({
-    // Destination to store image     
-    destination: 'public/images', 
-      filename: (req, file, cb) => {
-          cb(null, file.fieldname + '_' + Date.now() 
-             + path.extname(file.originalname))
-            // file.fieldname is name of the field (image)
-            // path.extname get the uploaded file extension
-    }
-});
-
-const imageUpload = multer({
-    storage: imageStorage,
-    limits: {
-      fileSize: 1000000 // 1000000 Bytes = 1 MB
-    },
-    fileFilter(req, file, cb) {
-      if (!file.originalname.match(/\.(png|jpg|jpeg)$/)) { 
-         // upload only png and jpg format
-        //  return cb(new Error('Please upload a Image'))
-       }
-     cb(undefined, true)
-  }
-}) 
-
-
 
 app.post('/',imageUpload.single('image'),async (req,res)=>{
     const newtodo = new Todo({
@@ -65,16 +34,11 @@ app.get('/',  async(req,res)=>{
     }   
 
 });
-//old code
-// app.get('/show/:id',async (req,res)=>{
-//     const todoo = await Todo.findById(req.params.id)
-//     res.render('show',{todoo:todoo}) 
-//     // console.log(`images/${todo.image}`);
-// })
 
 app.get('/show/:id',async (req,res)=>{
-    const todoo = await Todo.findById(req.params.id)
-    res.render('profile',{todoo:todoo}) 
+    const user = await Todo.findById(req.params.id)
+ 
+    res.render('profile',{user}) 
     // console.log(`images/${todo.image}`);
 })
 
