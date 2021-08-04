@@ -65,9 +65,16 @@ app.get('/',  async(req,res)=>{
     }   
 
 });
+//old code
+// app.get('/show/:id',async (req,res)=>{
+//     const todoo = await Todo.findById(req.params.id)
+//     res.render('show',{todoo:todoo}) 
+//     // console.log(`images/${todo.image}`);
+// })
+
 app.get('/show/:id',async (req,res)=>{
     const todoo = await Todo.findById(req.params.id)
-    res.render('show',{todoo:todoo}) 
+    res.render('profile',{todoo:todoo}) 
     // console.log(`images/${todo.image}`);
 })
 
@@ -81,7 +88,7 @@ app.get('/delete/:id',async (req,res)=>{
         console.log(error);
     }
     const todo =  await Todo.find()
-    res.render('onepage', { todo:todo , msg: `data deleted` })
+    res.render('onepage', { msg: `data deleted` , todo:todo })
 })
 
 app.get('/edit/:id',async (req,res)=>{
